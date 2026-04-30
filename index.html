@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>2smallDevs.com</title>
+
+<style>
+:root {
+  --bg-main: linear-gradient(135deg,#1e3c72,#2a5298);
+  --bg-nav: #111;
+  --text-primary: white;
+  --text-secondary: #e7f6ff;
+  --text-accent: #a8e8ff;
+  --accent-color: #00e0ff;
+  --accent-bg: rgba(255,255,255,0.1);
+  --accent-border: rgba(255,255,255,0.3);
+  --card-bg: rgba(255,255,255,0.08);
+  --card-border: rgba(255,255,255,0.15);
+  --hover-bg: rgba(255,255,255,0.3);
+  --text-muted: #cfefff;
+}
+
+body.dark-theme {
+  --bg-main: linear-gradient(135deg,#0a0e27,#0f1430);
+  --bg-nav: #050709;
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-accent: #7a9bc4;
+  --accent-color: #00b8ff;
+  --accent-bg: rgba(0,184,255,0.08);
+  --accent-border: rgba(0,184,255,0.2);
+  --card-bg: rgba(0,184,255,0.04);
+  --card-border: rgba(0,184,255,0.12);
+  --hover-bg: rgba(0,184,255,0.15);
+  --text-muted: #808080;
+}
+
+body.light-theme {
+  --bg-main: linear-gradient(135deg,#f5f5f5,#ffffff);
+  --bg-nav: #f0f0f0;
+  --text-primary: #111;
+  --text-secondary: #333;
+  --text-accent: #0066cc;
+  --accent-color: #0080ff;
+  --accent-bg: rgba(0,128,255,0.1);
+  --accent-border: rgba(0,128,255,0.3);
+  --card-bg: rgba(0,128,255,0.05);
+  --card-border: rgba(0,128,255,0.2);
+  --hover-bg: rgba(0,128,255,0.2);
+  --text-muted: #666;
+}
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:var(--bg-main);
+  color:var(--text-primary);
+  opacity:0;
+  transition:opacity 0.6s ease;
+}
+
+body.page-loaded{
+  opacity:1;
+}
+
+nav{
+  display:flex;
+  background:var(--bg-nav);
+  padding:15px;
+  gap:20px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav .nav-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+nav button{
+  background:none;
+  border:none;
+  color:var(--text-primary);
+  font-size:18px;
+  cursor:pointer;
+}
+
+nav button:hover{
+  color:var(--accent-color);
+  transform: translateY(-1px) scale(1.02);
+}
+
+nav button,
+.theme-toggle,
+.category-btn,
+.file,
+.download-card,
+.info-card,
+.article-card,
+#search,
+#fileList,
+#home h1,
+#downloads h1,
+#info h1,
+#articles h1 {
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+nav button{
+  animation: fadeInUp 0.45s ease both;
+}
+
+.theme-toggle,
+.category-btn,
+#search,
+#home h1,
+#downloads h1,
+#info h1,
+#articles h1 {
+  animation: fadeInUp 0.45s ease both;
+}
+
+#fileList,
+.file,
+#search {
+  animation: fadeInRight 0.45s ease both;
+}
+
+.category-btn:hover,
+.theme-toggle:hover{
+  transform: translateY(-2px) scale(1.03);
+}
+
+.theme-toggle {
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  color: var(--accent-color);
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.section{
+  display:none;
+  padding:40px;
+  opacity:0;
+  transform:translateY(18px);
+  transition:opacity 0.4s ease, transform 0.4s ease;
+}
+
+.active{
+  display:block;
+  opacity:1;
+  transform:translateY(0);
+}
+
+input{
+  padding:10px;
+  width:300px;
+  border-radius:5px;
+  border:none;
+}
+
+.category-buttons{
+  margin:20px 0 10px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.category-btn{
+  background:var(--accent-bg);
+  border:1px solid var(--accent-border);
+  color:var(--text-primary);
+  padding:8px 14px;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+.category-btn.active,
+.category-btn:hover{
+  background:var(--accent-color);
+  color:var(--bg-nav);
+}
+
+.category-heading{
+  margin-top:25px;
+  font-size:22px;
+  color:var(--text-accent);
+  border-bottom:1px solid var(--card-border);
+  padding-bottom:6px;
+}
+
+.file{
+  margin-top:15px;
+  cursor:pointer;
+  padding:10px;
+  background:var(--accent-bg);
+  border-radius:5px;
+}
+
+.file:hover{
+  background:var(--hover-bg);
+  transform: translateX(3px);
+}
+
+.download-box{
+  margin-top:30px;
+}
+
+.download-card{
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:18px;
+  padding:26px;
+  box-shadow:0 16px 40px rgba(0,0,0,0.16);
+  animation: fadeInUp 0.45s ease both;
+}
+
+.download-card:hover,
+.info-card:hover,
+.article-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow:0 22px 52px rgba(0,0,0,0.22);
+  border-color: rgba(0,224,255,0.4);
+  background: rgba(255,255,255,0.12);
+}
+
+.info-card,
+.download-card,
+.article-card {
+  animation: fadeInUp 0.45s ease both;
+}
+
+.file{
+  margin-top:15px;
+  cursor:pointer;
+  padding:10px;
+  background:var(--accent-bg);
+  border-radius:5px;
+  animation: fadeInRight 0.35s ease both;
+}
+
+.download-title{
+  margin:0 0 12px;
+  font-size:24px;
+  color:var(--accent-color);
+}
+
+.download-meta{
+  margin:6px 0;
+  color:var(--text-secondary);
+}
+
+.download-placeholder{
+  margin:0;
+  font-size:17px;
+  line-height:1.8;
+  color:var(--text-secondary);
+}
+
+.download-hint{
+  margin-top:22px;
+  font-size:15px;
+  color:var(--text-secondary);
+}
+
+a.download-btn{
+  display:inline-block;
+  padding:12px 20px;
+  background:var(--accent-color);
+  color:white;
+  text-decoration:none;
+  border-radius:5px;
+  font-weight:bold;
+}
+
+body.light-theme a.download-btn{
+  color:#fff;
+}
+
+.progress-bar-container{
+  margin-top:15px;
+  width:100%;
+  height:8px;
+  background:rgba(255,255,255,0.2);
+  border-radius:4px;
+  overflow:hidden;
+  display:none;
+}
+
+.progress-bar{
+  height:100%;
+  background:var(--accent-color);
+  width:0%;
+  transition:width 0.1s ease;
+}
+
+#articles h1{
+  margin-top:0;
+  font-size:38px;
+}
+
+#articles .articles-scroller{
+  position:relative;
+  margin-top:25px;
+  overflow:hidden;
+}
+
+#articles .articles-grid{
+  display:flex;
+  gap:20px;
+  overflow-x:auto;
+  padding:12px 70px;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+}
+
+#articles .articles-grid::-webkit-scrollbar{
+  height:10px;
+}
+
+#articles .articles-grid::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,0.22);
+  border-radius:999px;
+}
+
+#articles .scroll-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:48px;
+  height:48px;
+  border:none;
+  border-radius:50%;
+  background:rgba(12,16,32,0.82);
+  color:white;
+  font-size:26px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 18px 36px rgba(0,0,0,0.32);
+  backdrop-filter:blur(10px);
+  transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+  opacity:0.96;
+  z-index:3;
+}
+
+#articles .scroll-btn.left{
+  left:12px;
+}
+
+#articles .scroll-btn.right{
+  right:12px;
+}
+
+#articles .scroll-btn:hover{
+  background:rgba(12,16,32,0.94);
+  transform:translateY(-50%) scale(1.06);
+  opacity:1;
+}
+
+#articles .scroll-btn:active{
+  transform:translateY(-50%) scale(0.96);
+}
+
+@media (max-width: 700px) {
+  #articles .scroll-btn{
+    width:38px;
+    height:38px;
+    font-size:20px;
+  }
+}
+
+.article-card{
+  min-width:320px;
+  flex:0 0 320px;
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:18px;
+  padding:28px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.15);
+  scroll-snap-align:start;
+  animation: fadeInUp 0.5s ease both;
+}
+
+@keyframes fadeInUp{
+  from{opacity:0; transform:translateY(16px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+@keyframes fadeInRight{
+  from{opacity:0; transform:translateX(-18px);}
+  to{opacity:1; transform:translateX(0);}
+}
+
+@keyframes pulseGlow{
+  0%,100%{box-shadow:0 0 0 0 rgba(0,224,255,0.35);}
+  50%{box-shadow:0 0 24px 6px rgba(0,224,255,0.18);}
+}
+
+@keyframes floatUp{
+  0%,100%{transform: translateY(0);} 
+  50%{transform: translateY(-4px);}
+}
+
+@keyframes sectionFade{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.section.active{
+  animation: sectionFade 0.35s ease both;
+}
+
+.download-btn{
+  animation: pulseGlow 3.2s ease-in-out infinite;
+}
+
+.article-card h2{
+  margin-top:0;
+  color:var(--accent-color);
+  font-size:24px;
+}
+
+.article-card p,
+.article-card li{
+  line-height:1.7;
+  color:var(--text-secondary);
+}
+
+.article-card ul{
+  margin:14px 0 0 20px;
+  padding:0;
+}
+
+.article-card li{
+  margin-bottom:10px;
+}
+
+.article-label{
+  display:inline-block;
+  margin-bottom:14px;
+  padding:6px 12px;
+  background:var(--accent-bg);
+  color:var(--accent-color);
+  border-radius:999px;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+
+.article-note{
+  margin-top:16px;
+  font-style:italic;
+  color:var(--text-muted);
+}
+
+#info .info-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
+  margin-top:24px;
+}
+
+.info-card{
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 16px 40px rgba(0,0,0,0.14);
+}
+
+.info-card h3{
+  margin-top:0;
+  color:var(--accent-color);
+  font-size:22px;
+}
+
+.info-card p{
+  margin:10px 0 0;
+  line-height:1.7;
+  color:var(--text-secondary);
+}
+
+.info-summary{
+  max-width:850px;
+  line-height:1.8;
+  font-size:17px;
+  color:var(--text-secondary);
+  margin-top:12px;
+}
+
+.mobile-warning{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.97);
+  color:white;
+  z-index:9999;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:30px;
+}
+
+.mobile-warning.active{
+  display:flex;
+}
+
+.mobile-warning-content{
+  max-width:420px;
+  border:1px solid var(--card-border);
+  background:var(--card-bg);
+  border-radius:24px;
+  padding:32px;
+}
+
+.mobile-warning-content h1{
+  margin:0 0 16px;
+  font-size:32px;
+  color:var(--accent-color);
+}
+
+.mobile-warning-content p{
+  margin:0;
+  line-height:1.7;
+  color:var(--text-secondary);
+}
+</style>
+</head>
+
+<body>
+
+<div id="mobileWarning" class="mobile-warning">
+  <div class="mobile-warning-content">
+    <h1>Not available on phone</h1>
+    <p>This page is made for desktop users. Please open 2smallDevs.com on a computer for the full experience.</p>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-buttons">
+    <button onclick="showTab('home')">Home</button>
+    <button onclick="showTab('downloads')">Downloads</button>
+    <button onclick="showTab('info')">Info</button>
+    <button onclick="showTab('articles')">Articles</button>
+  </div>
+  <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🔷 Normal</button>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="section active">
+  <h1>Home</h1>
+  <input type="text" id="search" placeholder="Search files..." onkeyup="searchFiles()">
+
+  <div class="category-buttons">
+    <button class="category-btn active" onclick="filterCategory('All')">All</button>
+    <button class="category-btn" onclick="filterCategory('Shortcuts')">Shortcuts</button>
+    <button class="category-btn" onclick="filterCategory('Tools')">Tools</button>
+    <button class="category-btn" onclick="filterCategory('Prank Malware')">Prank Malware</button>
+    <button class="category-btn" onclick="filterCategory('Games')">Games</button>
+  </div>
+
+  <div id="fileList">
+    <p class="category-heading" data-category="Shortcuts">Shortcuts</p>
+    <div class="file" data-category="Shortcuts" onclick="selectFile('Shutdown Shortcup.zip','Shortcuts')">Shutdown Shortcup.zip</div>
+    <div class="file" data-category="Shortcuts" onclick="selectFile('Restart Shortcup.zip','Shortcuts')">Restart Shortcup.zip</div>
+
+    <p class="category-heading" data-category="Tools">Tools</p>
+    <div class="file" data-category="Tools" onclick="selectFile('Password Generator Tool.zip','Tools')">Password Generator Tool.zip</div>
+    <div class="file" data-category="Tools" onclick="selectFile('Virus Scanner.zip','Tools')">Virus Scanner.zip</div>
+
+    <p class="category-heading" data-category="Games">Games</p>
+    <div class="file" data-category="Games" onclick="selectFile('Impossible Quiz.zip','Games')">Impossible Quiz.zip</div>
+
+    <p class="category-heading" data-category="Prank Malware">Prank Malware</p>
+    <div class="file" data-category="Prank Malware" onclick="selectFile('GoodLuck Malware.zip','Prank Malware')">GoodLuck Malware.zip</div>
+    <div class="file" data-category="Prank Malware" onclick="selectFile('GoodLuck 1.zip','Prank Malware')">GoodLuck 1.zip</div>
+    <div class="file" data-category="Prank Malware" onclick="selectFile('GoodLuck 2.zip','Prank Malware')">GoodLuck 2.zip</div>
+    <div class="file" data-category="Prank Malware" onclick="selectFile('GoodLuck 3.zip','Prank Malware')">GoodLuck 3.zip</div>
+    <div class="file" data-category="Prank Malware" onclick="selectFile('GoodLuck 4.zip','Prank Malware')">GoodLuck 4.zip</div>
+    <div class="file" data-category="Prank Malware" onclick="selectFile('GoodLuck 5.zip','Prank Malware')">GoodLuck 5.zip</div>
+  </div>
+</div>
+
+<div id="downloads" class="section">
+  <h1>Downloads</h1>
+  <div id="selectedFile" class="download-box">
+    <div class="download-card">
+      <p class="download-placeholder">Select a file from Home to see download details here.</p>
+    </div>
+  </div>
+  <p class="download-hint">Tip: Pick a file from the Home tab and then use the Download Now button to save it.</p>
+</div>
+
+<!-- INFO -->
+<div id="info" class="section">
+  <h1>Info</h1>
+  <p class="info-summary">Welcome to 2smallDevs.com — a small developer hub where we share practical tools, shortcut utilities, and creative prank experiments. Our goal is to make technology easier to use while keeping downloads organized and safe.</p>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>Who we are</h3>
+      <p>Built by Sozon_Dev and mike_beles, this site is designed for developers and learners who want quick access to helpful utilities and engaging downloads.</p>
+    </div>
+    <div class="info-card">
+      <h3>What we offer</h3>
+      <p>Find useful apps like password tools and virus scanners, plus shortcut files for faster system actions and a special prank malware category for harmless experiments.</p>
+    </div>
+    <div class="info-card">
+      <h3>How to use it</h3>
+      <p>Browse files on the Home tab, choose a category, and click a file to download. Selected downloads appear under the Downloads tab for easy access.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ARTICLES -->
+<div id="articles" class="section">
+  <h1>Articles</h1>
+
+  <div class="articles-scroller">
+    <button class="scroll-btn left" onclick="scrollArticles(-1)" aria-label="Scroll left">‹</button>
+    <div class="articles-grid" id="articlesGrid">
+      <div class="article-card">
+        <span class="article-label">Cybersecurity</span>
+      <h2>Protect your devices</h2>
+      <p>Cybersecurity means protecting computers, networks, and personal data from online threats like hacking, malware, and phishing.</p>
+      <ul>
+        <li>Use strong passwords and unique accounts.</li>
+        <li>Keep software updated and patched.</li>
+        <li>Be cautious with email links and downloads.</li>
+      </ul>
+      <p class="article-note">Recommended tools: Password Generator Tool and Virus Scanner.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label">Shortcuts</span>
+      <h2>Work faster with shortcuts</h2>
+      <p>Keyboard shortcuts help you complete tasks quickly without moving your hands from the keyboard. They improve speed and efficiency for everyday activities.</p>
+      <ul>
+        <li><strong>Ctrl + C</strong> copies selected text.</li>
+        <li><strong>Ctrl + V</strong> pastes copied content.</li>
+        <li><strong>Ctrl + Alt + S</strong> or <strong>Ctrl + Alt + R</strong> can launch your shutdown and restart shortcuts.</li>
+      </ul>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label">Malware</span>
+      <h2>Understand malware risks</h2>
+      <p>Malware is software designed to damage systems, steal data, or gain unauthorized access. It can slow down your device, cause failures, or expose private information.</p>
+      <ul>
+        <li>Run antivirus software to stay protected.</li>
+        <li>Avoid unknown downloads and suspicious attachments.</li>
+        <li>Update your system regularly for better security.</li>
+      </ul>
+      <p class="article-note">Some malware is meant as a harmless prank, which is why we have a dedicated Prank Malware category.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label">Games</span>
+      <h2>Enjoy games safely</h2>
+      <p>Games are a great way to relax and sharpen skills, but it's important to download them from trusted sources and keep your system secure.</p>
+      <ul>
+        <li>Choose verified game files and check reviews before downloading.</li>
+        <li>Keep your system and game software updated.</li>
+        <li>Back up your work before installing new games.</li>
+      </ul>
+      <p class="article-note">The Games category is perfect for fun content that stays safe and enjoyable.</p>
+    </div>
+    </div>
+    <button class="scroll-btn right" onclick="scrollArticles(1)" aria-label="Scroll right">›</button>
+  </div>
+</div>
+
+<script>
+
+let currentFile = "";
+
+// Theme switching
+function toggleTheme(){
+  const body = document.body;
+  const themeBtn = document.getElementById('themeBtn');
+  let currentTheme = body.classList.contains('light-theme') ? 'light' : body.classList.contains('dark-theme') ? 'dark' : 'normal';
+  let nextTheme = 'dark';
+  let buttonText = '🌙 Dark';
+  
+  if(currentTheme === 'normal'){
+    nextTheme = 'dark';
+    body.classList.add('dark-theme');
+    body.classList.remove('light-theme');
+    buttonText = '🌙 Dark';
+  } else if(currentTheme === 'dark'){
+    nextTheme = 'light';
+    body.classList.add('light-theme');
+    body.classList.remove('dark-theme');
+    buttonText = '☀️ Light';
+  } else {
+    nextTheme = 'normal';
+    body.classList.remove('light-theme', 'dark-theme');
+    buttonText = '🔷 Normal';
+  }
+  
+  localStorage.setItem('theme', nextTheme);
+  themeBtn.textContent = buttonText;
+}
+
+function initializeTheme(){
+  const savedTheme = localStorage.getItem('theme') || 'normal';
+  const body = document.body;
+  const themeBtn = document.getElementById('themeBtn');
+  
+  if(savedTheme === 'dark'){
+    body.classList.add('dark-theme');
+    body.classList.remove('light-theme');
+    themeBtn.textContent = '🌙 Dark';
+  } else if(savedTheme === 'light'){
+    body.classList.add('light-theme');
+    body.classList.remove('dark-theme');
+    themeBtn.textContent = '☀️ Light';
+  } else {
+    body.classList.remove('light-theme', 'dark-theme');
+    themeBtn.textContent = '🔷 Normal';
+  }
+}
+
+window.addEventListener('load', () => {
+  initializeTheme();
+  document.body.classList.add('page-loaded');
+});
+
+function showTab(tab){
+  document.querySelectorAll(".section").forEach(sec => {
+    sec.classList.remove("active");
+  });
+  document.getElementById(tab).classList.add("active");
+}
+
+function scrollArticles(direction){
+  const grid = document.getElementById('articlesGrid');
+  if (!grid) return;
+  const scrollAmount = grid.clientWidth * 0.8;
+  grid.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+}
+
+let currentCategory = 'All';
+
+function searchFiles(){
+  updateFileVisibility();
+}
+
+function filterCategory(category){
+  currentCategory = category;
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.innerText === category);
+  });
+  updateFileVisibility();
+}
+
+function updateFileVisibility(){
+  let input = document.getElementById('search').value.toLowerCase();
+  let files = document.querySelectorAll('.file');
+  let visibleCountByCategory = {};
+
+  files.forEach(file => {
+    let matchesSearch = file.innerText.toLowerCase().includes(input);
+    let matchesCategory = currentCategory === 'All' || file.dataset.category === currentCategory;
+    let visible = matchesSearch && matchesCategory;
+    file.style.display = visible ? 'block' : 'none';
+
+    if(visible){
+      visibleCountByCategory[file.dataset.category] = (visibleCountByCategory[file.dataset.category] || 0) + 1;
+    }
+  });
+
+  document.querySelectorAll('.category-heading').forEach(heading => {
+    heading.style.display = visibleCountByCategory[heading.dataset.category] ? 'block' : 'none';
+  });
+}
+
+function startDownload(filename){
+  const progressContainer = document.getElementById('progressContainer');
+  const progressBar = document.getElementById('progressBar');
+  
+  if(progressContainer && progressBar){
+    progressContainer.style.display = 'block';
+    progressBar.style.width = '0%';
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 15; // Random progress increment
+      if(progress >= 100){
+        progress = 100;
+        clearInterval(interval);
+        setTimeout(() => {
+          progressContainer.style.display = 'none';
+        }, 1000);
+      }
+      progressBar.style.width = progress + '%';
+    }, 200);
+  }
+}
+
+function selectFile(filename, category){
+  currentFile = filename;
+
+  document.getElementById("selectedFile").innerHTML = `
+    <div class="download-card">
+      <p class="download-title">${filename}</p>
+      <p class="download-meta"><strong>Category:</strong> ${category}</p>
+      <p class="download-meta"><strong>Type:</strong> ZIP archive</p>
+      <a class="download-btn" href="${filename}" download onclick="startDownload('${filename}')">Download Now</a>
+      <div class="progress-bar-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+  `;
+
+  showTab("downloads");
+}
+
+function checkMobileWarning(){
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.matchMedia('(max-width: 768px)').matches;
+  document.getElementById('mobileWarning').classList.toggle('active', isMobile);
+}
+
+window.addEventListener('load', checkMobileWarning);
+window.addEventListener('resize', checkMobileWarning);
+
+</script>
+
+</body>
+</html>
